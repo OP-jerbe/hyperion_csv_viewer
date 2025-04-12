@@ -29,15 +29,20 @@ class MainWindow(QMainWindow):
         dropdown_height = 40
         self.setFixedSize(window_width, window_height)
         self.setWindowTitle('Hyperion Test Data Viewer')
+
+        # Set the icon for the window
         if hasattr(sys, 'frozen'):  # Check if running from the Pyinstaller EXE
             icon_path = sys._MEIPASS + '/assets/icon.ico'  # type: ignore
         else:
             icon_path = './assets/icon.ico'  # Use the local icon file in dev mode
         self.setWindowIcon(QIcon(icon_path))
+
+        # Set the style of the window
         apply_stylesheet(self, theme='dark_lightgreen.xml', invert_secondary=True)
         self.setStyleSheet(
             self.styleSheet() + """QLineEdit, QTextEdit {color: lightgreen;}"""
         )
+
         # Create the menu bar
         self.menu_bar = self.menuBar()
 
