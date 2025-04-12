@@ -3,13 +3,11 @@ import sys
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import (
-    QComboBox,
     QGridLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QMainWindow,
-    QPushButton,
     QVBoxLayout,
     QWidget,
     QSizePolicy,
@@ -104,8 +102,8 @@ class MainWindow(QMainWindow):
         self.h_title_layout = QHBoxLayout()
         self.h_title_layout.addWidget(self.title_label, stretch=0)
         self.h_title_layout.addWidget(self.title_input, stretch=1)
-        self.h_title_layout.setContentsMargins(0, 0, 0, 0)  # remove outer margins
-        self.h_title_layout.setSpacing(5)  # or even 0 if you want no space at all
+        self.h_title_layout.setContentsMargins(0, 0, 0, 0)
+        self.h_title_layout.setSpacing(0)
 
         self.g_combo_box_layout = QGridLayout()
         self.g_combo_box_layout.addWidget(self.plot1_label, 0, 0)
@@ -118,11 +116,13 @@ class MainWindow(QMainWindow):
         self.g_combo_box_layout.addWidget(self.plot4_combo, 3, 1)
         self.g_combo_box_layout.setColumnStretch(0, 1)
         self.g_combo_box_layout.setColumnStretch(1, 1)
+        self.g_combo_box_layout.setContentsMargins(0, 10, 0, 0)
 
         self.v_button_layout = QVBoxLayout()
         self.v_button_layout.addWidget(self.select_csv_button)
         self.v_button_layout.addWidget(self.plot_button)
         self.v_button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.v_button_layout.setContentsMargins(0, 10, 0, 0)
 
         self.v_canvas_layout = QVBoxLayout()
         self.v_canvas_layout.addWidget(self.canvas)
