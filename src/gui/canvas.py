@@ -5,9 +5,6 @@ class Canvas(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.setWindowTitle('CSV Display')
-        self.resize(400, 250)
-
         layout = QVBoxLayout(self)
 
         self.label = QLabel('Selected csv files:')
@@ -17,7 +14,6 @@ class Canvas(QWidget):
             background-color: gray;
             border: 2px ridge gray;
         """)
-        self.text_display.setFixedHeight(200)
 
         layout.addWidget(self.label)
         layout.addWidget(self.text_display)
