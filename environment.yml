@@ -1,0 +1,12 @@
+name: hyperion-csv-viewer-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13
+  - plotly
+  - pandas
+  - PySide6
+  - qt-material
+  - pyinstaller
+prefix: C:\Users\joshua\AppData\Local\anaconda3\envs\hyperion-csv-viewer-env
