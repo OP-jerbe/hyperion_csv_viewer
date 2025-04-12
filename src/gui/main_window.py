@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 )
 from qt_material import apply_stylesheet
 from gui.canvas import Canvas
+from gui.combo_box import ComboBox
 
 
 class MainWindow(QMainWindow):
@@ -31,8 +32,6 @@ class MainWindow(QMainWindow):
         input_box_height = 40
         button_width = 150
         button_height = 40
-        combo_box_width = 150
-        combo_box_height = 40
         self.setFixedSize(window_width, window_height)
 
         # Setup the title bar for the window
@@ -87,14 +86,10 @@ class MainWindow(QMainWindow):
         self.plot4_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         # Create the plot combo boxes
-        self.plot1_combo = QComboBox()
-        self.plot1_combo.setFixedSize(combo_box_width, combo_box_height)
-        self.plot2_combo = QComboBox()
-        self.plot2_combo.setFixedSize(combo_box_width, combo_box_height)
-        self.plot3_combo = QComboBox()
-        self.plot3_combo.setFixedSize(combo_box_width, combo_box_height)
-        self.plot4_combo = QComboBox()
-        self.plot4_combo.setFixedSize(combo_box_width, combo_box_height)
+        self.plot1_combo = ComboBox()
+        self.plot2_combo = ComboBox()
+        self.plot3_combo = ComboBox()
+        self.plot4_combo = ComboBox()
 
         # Create the buttons
         self.select_csv_button = QPushButton('Select CSV Files')
