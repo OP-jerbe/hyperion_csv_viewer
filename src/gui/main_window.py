@@ -11,9 +11,10 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 from qt_material import apply_stylesheet
-from canvas import Canvas
+from .canvas import Canvas
 
 
 class MainWindow(QMainWindow):
@@ -23,13 +24,13 @@ class MainWindow(QMainWindow):
         self.create_gui()
 
     def create_gui(self) -> None:
-        window_width = 470
-        window_height = 275
+        window_width = 330
+        window_height = 500
         input_box_width = 200
         input_box_height = 40
-        button_width = 100
+        button_width = 150
         button_height = 40
-        combo_box_width = 100
+        combo_box_width = 150
         combo_box_height = 40
         self.setFixedSize(window_width, window_height)
 
@@ -66,7 +67,7 @@ class MainWindow(QMainWindow):
         self.help_menu.addAction(self.open_quick_start_guide)
 
         # Create title label and input box
-        self.title_label = QLabel('Serial Number')
+        self.title_label = QLabel('Title:')
         self.title_input = QLineEdit()
         self.title_input.setFixedSize(input_box_width, input_box_height)
 
@@ -101,3 +102,40 @@ class MainWindow(QMainWindow):
         self.canvas.display_csv_files(
             ['file1.csv', 'file2.csv', 'file3.csv']
         )  # example data for testing
+
+        # Create the layout for the main window
+        self.h_title_layout = QHBoxLayout()
+        self.h_title_layout.addWidget(self.title_label)
+        self.h_title_layout.addWidget(self.title_input)
+
+        self.g_combo_box_layout = QGridLayout()
+        self.g_combo_box_layout.addWidget(self.plot1_label, 0, 0)
+        self.g_combo_box_layout.addWidget(self.plot2_label, 0, 1)
+        self.g_combo_box_layout.addWidget(self.plot1_combo, 1, 0)
+        self.g_combo_box_layout.addWidget(self.plot2_combo, 1, 1)
+        self.g_combo_box_layout.addWidget(self.plot3_label, 2, 0)
+        self.g_combo_box_layout.addWidget(self.plot4_label, 2, 1)
+        self.g_combo_box_layout.addWidget(self.plot3_combo, 3, 0)
+        self.g_combo_box_layout.addWidget(self.plot4_combo, 3, 1)
+        self.g_combo_box_layout.setColumnStretch(0, 1)
+        self.g_combo_box_layout.setColumnStretch(1, 1)
+
+        self.v_button_layout = QVBoxLayout()
+        self.v_button_layout.addWidget(self.select_csv_button)
+        self.v_button_layout.addWidget(self.plot_button)
+        self.v_button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.v_canvas_layout = QVBoxLayout()
+        self.v_canvas_layout.addWidget(self.canvas)
+        self.v_canvas_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.v_main_layout = QVBoxLayout()
+        self.v_main_layout.addLayout(self.h_title_layout)
+        self.v_main_layout.addLayout(self.g_combo_box_layout)
+        self.v_main_layout.addLayout(self.v_button_layout)
+        self.v_main_layout.addLayout(self.v_canvas_layout)
+
+        container = QWidget()
+        container.setLayout(self.v_main_layout)
+
+        self.setCentralWidget(container)
