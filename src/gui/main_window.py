@@ -28,9 +28,9 @@ class MainWindow(QMainWindow):
         dropdown_width = 100
         dropdown_height = 40
         self.setFixedSize(window_width, window_height)
-        self.setWindowTitle('Hyperion Test Data Viewer')
 
-        # Set the icon for the window
+        # Setup the title bar for the window
+        self.setWindowTitle('Hyperion Test Data Viewer')
         if hasattr(sys, 'frozen'):  # Check if running from the Pyinstaller EXE
             icon_path = sys._MEIPASS + '/assets/icon.ico'  # type: ignore
         else:
