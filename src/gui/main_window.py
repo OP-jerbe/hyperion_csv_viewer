@@ -1,6 +1,6 @@
 import sys
 
-from PySide6.QtCore import QEvent, QObject, Qt
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import (
     QComboBox,
@@ -12,9 +12,10 @@ from PySide6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QWidget,
+    QSizePolicy,
 )
 from qt_material import apply_stylesheet
-from .canvas import Canvas
+from gui.canvas import Canvas
 
 
 class MainWindow(QMainWindow):
@@ -24,7 +25,7 @@ class MainWindow(QMainWindow):
         self.create_gui()
 
     def create_gui(self) -> None:
-        window_width = 330
+        window_width = 350
         window_height = 500
         input_box_width = 200
         input_box_height = 40
@@ -68,6 +69,10 @@ class MainWindow(QMainWindow):
 
         # Create title label and input box
         self.title_label = QLabel('Title:')
+        self.title_label.setSizePolicy(
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
+        )
+        self.title_label.setStyleSheet('font-size: 18pt;')
         self.title_input = QLineEdit()
         self.title_input.setFixedSize(input_box_width, input_box_height)
 
@@ -105,10 +110,10 @@ class MainWindow(QMainWindow):
 
         # Create the layout for the main window
         self.h_title_layout = QHBoxLayout()
-        self.h_title_layout.addWidget(
-            self.title_label, alignment=Qt.AlignmentFlag.AlignCenter
-        )
+        self.h_title_layout.addWidget(self.title_label, stretch=0)
         self.h_title_layout.addWidget(self.title_input, stretch=1)
+        self.h_title_layout.setContentsMargins(0, 0, 0, 0)  # remove outer margins
+        self.h_title_layout.setSpacing(5)  # or even 0 if you want no space at all
 
         self.g_combo_box_layout = QGridLayout()
         self.g_combo_box_layout.addWidget(self.plot1_label, 0, 0)
