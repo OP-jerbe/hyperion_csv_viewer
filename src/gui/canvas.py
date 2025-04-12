@@ -14,7 +14,7 @@ class Canvas(QWidget):
         self.text_display = QTextEdit()
         self.text_display.setReadOnly(True)
         self.text_display.setStyleSheet("""
-            background-color: white;
+            background-color: gray;
             border: 2px ridge gray;
         """)
         self.text_display.setFixedHeight(200)
