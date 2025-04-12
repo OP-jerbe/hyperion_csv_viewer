@@ -105,8 +105,10 @@ class MainWindow(QMainWindow):
 
         # Create the layout for the main window
         self.h_title_layout = QHBoxLayout()
-        self.h_title_layout.addWidget(self.title_label)
-        self.h_title_layout.addWidget(self.title_input)
+        self.h_title_layout.addWidget(
+            self.title_label, alignment=Qt.AlignmentFlag.AlignCenter
+        )
+        self.h_title_layout.addWidget(self.title_input, stretch=1)
 
         self.g_combo_box_layout = QGridLayout()
         self.g_combo_box_layout.addWidget(self.plot1_label, 0, 0)
