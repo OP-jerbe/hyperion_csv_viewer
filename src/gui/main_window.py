@@ -8,11 +8,12 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMainWindow,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
-    QSizePolicy,
 )
 from qt_material import apply_stylesheet
+
 from gui.canvas import Canvas
 from gui.combo_box import ComboBox
 from gui.push_button import PushButton
@@ -25,11 +26,8 @@ class MainWindow(QMainWindow):
         self.create_gui()
 
     def create_gui(self) -> None:
-        window_width = 350
-        window_height = 500
-        input_box_width = 200
-        input_box_height = 40
-        self.setFixedSize(window_width, window_height)
+        # Set the size of the main window
+        self.setFixedSize(350, 500)
 
         # Setup the title bar for the window
         self.setWindowTitle('Hyperion Test Data Viewer')
@@ -65,12 +63,13 @@ class MainWindow(QMainWindow):
 
         # Create title label and input box
         self.title_label = QLabel('Title:')
+        self.title_label.setContentsMargins(0, 0, 5, 0)
         self.title_label.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred
         )
-        self.title_label.setStyleSheet('font-size: 18pt;')
+        self.title_label.setStyleSheet('font-size: 16pt;')
         self.title_input = QLineEdit()
-        self.title_input.setFixedSize(input_box_width, input_box_height)
+        self.title_input.setFixedHeight(40)
 
         # Create the plot labels
         self.plot1_label = QLabel('Plot 1')
@@ -102,7 +101,7 @@ class MainWindow(QMainWindow):
         self.h_title_layout = QHBoxLayout()
         self.h_title_layout.addWidget(self.title_label, stretch=0)
         self.h_title_layout.addWidget(self.title_input, stretch=1)
-        self.h_title_layout.setContentsMargins(0, 0, 0, 0)
+        self.h_title_layout.setContentsMargins(10, 0, 10, 0)
         self.h_title_layout.setSpacing(0)
 
         self.g_combo_box_layout = QGridLayout()
@@ -116,7 +115,8 @@ class MainWindow(QMainWindow):
         self.g_combo_box_layout.addWidget(self.plot4_combo, 3, 1)
         self.g_combo_box_layout.setColumnStretch(0, 1)
         self.g_combo_box_layout.setColumnStretch(1, 1)
-        self.g_combo_box_layout.setContentsMargins(0, 10, 0, 0)
+        self.g_combo_box_layout.setContentsMargins(10, 10, 10, 0)
+        self.g_combo_box_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.v_button_layout = QVBoxLayout()
         self.v_button_layout.addWidget(self.select_csv_button)
