@@ -8,17 +8,20 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMainWindow,
+    QMenu,
+    QMenuBar,
+    QMessageBox,
+    QPushButton,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
-    QMenuBar,
-    QMenu,
 )
 from qt_material import apply_stylesheet
 
 from gui.canvas import Canvas
 from gui.combo_box import ComboBox
-from gui.push_button import PushButton
+from loader import DataLoader
+from plotter import Plotter
 
 
 class MainWindow(QMainWindow):
@@ -29,7 +32,7 @@ class MainWindow(QMainWindow):
 
     def create_gui(self) -> None:
         # Set the size of the main window
-        self.setFixedSize(350, 500)
+        self.setFixedSize(400, 500)
 
         # Setup the title bar for the window
         self.setWindowTitle('Hyperion Test Data Viewer')
@@ -96,8 +99,12 @@ class MainWindow(QMainWindow):
         ]
 
         # Create the buttons
-        self.select_csv_button: PushButton = PushButton('Select CSV Files')
-        self.plot_button: PushButton = PushButton('Plot Data')
+        self.select_csv_button: QPushButton = QPushButton('Select CSV Files')
+        self.select_csv_button.setFixedSize(150, 40)
+        self.select_csv_button.clicked.connect(self.handle_select_csv)
+        self.plot_button: QPushButton = QPushButton('Plot Data')
+        self.plot_button.setFixedSize(150, 40)
+        self.plot_button.clicked.connect(self.handle_plot)
 
         # Create the canvas for displaying CSV data
         self.canvas: Canvas = Canvas()
@@ -146,3 +153,49 @@ class MainWindow(QMainWindow):
         container.setLayout(self.v_main_layout)
 
         self.setCentralWidget(container)
+
+    def handle_select_csv(self) -> None:
+        data_loader = DataLoader()
+        file_paths = data_loader.get_file_paths()
+        if not file_paths:
+            return
+
+        self.df = data_loader.load_data(file_paths)
+        if self.df is None:
+            QMessageBox.critical(
+                self, 'Error', 'Failed to load data from the selected files.'
+            )
+            return
+
+        headers = self.df.columns.tolist()
+        headers.remove('Time')
+
+        for combo in self.combo_boxes:
+            combo.populate(headers)
+
+        self.canvas.display_csv_files(file_paths)
+
+    def handle_plot(self) -> None:
+        print('Plot button clicked!')
+
+    #     # Get selected headers
+    #     selected_headers: list[str] = [
+    #         combo.current_text() for combo in self.combo_boxes if combo.current_text()
+    #     ]
+
+    #     if not selected_headers:
+    #         QMessageBox.warning(
+    #             self, 'No Data Selected', 'Please select at least one column to plot.'
+    #         )
+    #         return
+
+    #     # Create and configure the plot
+    #     plotter = Plotter(title=self.title_input.text(), traces=selected_headers)
+    #     fig = plotter.create_fig()
+
+    #     # Now you'd probably add traces and render the figure.
+    #     # For example:
+    #     for col in selected_headers:
+    #         fig.add_trace(go.Scatter(x=self.df['Time'], y=self.df[col], name=col))
+
+    #     fig.show()
