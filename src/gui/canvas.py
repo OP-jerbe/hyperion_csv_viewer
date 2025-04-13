@@ -5,8 +5,6 @@ class Canvas(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        layout = QVBoxLayout(self)
-
         self.label = QLabel('Selected csv files:')
         self.text_display = QTextEdit()
         self.text_display.setReadOnly(True)
@@ -15,6 +13,7 @@ class Canvas(QWidget):
             border: 2px ridge gray;
         """)
 
+        layout = QVBoxLayout(self)
         layout.addWidget(self.label)
         layout.addWidget(self.text_display)
 
