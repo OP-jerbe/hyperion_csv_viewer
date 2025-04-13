@@ -77,6 +77,7 @@ class DataLoader:
             'Lens #1 Current (uA)': 'Lens Current (μA)',
             'Lens #1 Voltage (V)': 'Lens Voltage (V)',
             'Lens #1 Voltage (kV)': 'Lens Voltage (V)',
+            'Total Current (uA)': 'Total Current (μA)',
         }
 
         self.df.rename(columns=rename_map, inplace=True, errors='ignore')
