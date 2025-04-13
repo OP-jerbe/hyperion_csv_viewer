@@ -6,7 +6,8 @@ class ComboBox(QWidget):
         super().__init__()
 
         self.combo_box = QComboBox(self)
-        self.combo_box.setFixedSize(150, 40)
+        self.combo_box.setFixedHeight(40)
+        self.combo_box.setStyleSheet('color: white;')
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.combo_box)
