@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QLabel, QTextEdit, QVBoxLayout, QWidget
+from pathlib import Path
 
 
 class Canvas(QWidget):
@@ -20,4 +21,5 @@ class Canvas(QWidget):
     def display_csv_files(self, file_list) -> None:
         """Call this method to update the display with a list of CSV filenames."""
         self.text_display.clear()
-        self.text_display.append('\n'.join(file_list))
+        filenames = [Path(path).name for path in file_list]
+        self.text_display.append('\n'.join(filenames))
