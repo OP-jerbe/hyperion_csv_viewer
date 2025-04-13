@@ -67,7 +67,7 @@ class DataProcessor:
 
         return self.df
 
-    def check_for_time_header(self) -> bool:
+    def _check_for_time_header(self) -> bool:
         """Checks that 'Time' is in headers list"""
         has_time_header: bool = False
         strings: tuple[str] = ('Time',)
@@ -79,7 +79,7 @@ class DataProcessor:
     def strip_Time(self) -> list[str]:
         """Removes the 'Time' column header from the list of headers in the DataFrame."""
         df_headers: list[str] = self.df.columns.tolist()
-        time_header: bool = self.check_for_time_header()
+        time_header: bool = self._check_for_time_header()
         if time_header is True:
             df_headers.remove('Time')
         return df_headers
