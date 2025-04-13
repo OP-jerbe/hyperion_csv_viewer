@@ -5,7 +5,19 @@ import sys
 
 
 class DataLoader:
-    def _get_file_paths(self) -> list[str]:
+    def __init__(self) -> None:
+        self.df: DataFrame | None = None
+
+    def _check_for_time_header(self) -> bool:
+        """Checks that 'Time' is in headers list"""
+        if self.df is None:
+            return False
+        for string in ('Time',):
+            if string in self.df.columns:
+                return True
+        return False
+
+    def get_file_paths(self) -> list[str]:
         """
         Open a file dialog to select a CSV file.
 
@@ -42,12 +54,41 @@ class DataLoader:
             file_path (str): The path to the CSV file.
 
         Returns:
-            pd.DataFrame: The loaded DataFrame.
+            DataFrame | None: The loaded DataFrame or None.
         """
-        # Load the CSV file into a DataFrame
-        file_paths = self._get_file_paths()
-        if not file_paths:
-            return None
-        df = pd.concat(map(pd.read_csv, file_paths), ignore_index=True)
 
-        return df
+        try:
+            self.df = pd.concat(map(pd.read_csv, file_paths), ignore_index=True)
+        except Exception as e:
+            print(f'Error loading CSV files: {e}')
+            return None
+
+        if self._check_for_time_header() is False:
+            raise ValueError(
+                'No "Time" header in the CSV file. Please check the file format.'
+            )
+
+        rename_map = {
+            'Angular Intensity (mA/str)': 'Angular Intensity (mA/sr)',
+            'Beam Voltage (kV)': 'Beam Voltage (V)',
+            'Extractor Voltage (kV)': 'Extractor Voltage (V)',
+            'Extractor Current (uA)': 'Extractor Current (μA)',
+            'Beam Supply Current (uA)': 'Beam Supply Current (μA)',
+            'Lens #1 Current (uA)': 'Lens Current (μA)',
+            'Lens #1 Voltage (V)': 'Lens Voltage (V)',
+            'Lens #1 Voltage (kV)': 'Lens Voltage (V)',
+        }
+
+        self.df.rename(columns=rename_map, inplace=True, errors='ignore')
+
+        return self.df
+
+    def strip_time_from_headers(self) -> list[str] | None:
+        """Removes the 'Time' column header from the list of headers in the DataFrame."""
+        if self.df is None:
+            return
+        df_headers: list[str] = self.df.columns.tolist()
+        time_header: bool = self._check_for_time_header()
+        if time_header is True:
+            df_headers.remove('Time')
+        return df_headers
