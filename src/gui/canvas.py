@@ -10,8 +10,7 @@ class Canvas(QWidget):
         self.text_display = QTextEdit()
         self.text_display.setReadOnly(True)
         self.text_display.setStyleSheet("""
-            background-color: gray;
-            border: 2px ridge gray;
+            color: lightgreen;
         """)
 
         layout = QVBoxLayout(self)
