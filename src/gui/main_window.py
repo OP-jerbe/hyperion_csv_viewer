@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
 
     def create_gui(self) -> None:
         # Set the size of the main window
-        self.setFixedSize(400, 500)
+        self.setFixedSize(420, 500)
 
         # Setup the title bar for the window
         self.setWindowTitle('Hyperion Test Data Viewer')
@@ -168,7 +168,7 @@ class MainWindow(QMainWindow):
             return
 
         headers = self.df.columns.tolist()
-        headers.remove('Time')
+        headers[headers.index('Time')] = 'None'
 
         for combo in self.combo_boxes:
             combo.populate(headers)
@@ -176,12 +176,9 @@ class MainWindow(QMainWindow):
         self.canvas.display_csv_files(file_paths)
 
     def handle_plot(self) -> None:
-        print('Plot button clicked!')
-
-    #     # Get selected headers
-    #     selected_headers: list[str] = [
-    #         combo.current_text() for combo in self.combo_boxes if combo.current_text()
-    #     ]
+        selected_headers: list[str] = [
+            combo.current_text() for combo in self.combo_boxes if combo.current_text()
+        ]
 
     #     if not selected_headers:
     #         QMessageBox.warning(
