@@ -181,8 +181,6 @@ class MainWindow(QMainWindow):
             combo.currentText() for combo in self.combo_boxes
         ]
 
-        print(combo_box_selections)
-
         if all(selection == 'None' for selection in combo_box_selections):
             QMessageBox.warning(
                 self, '\nNo Data Selected', 'Please select at least one column to plot.'
