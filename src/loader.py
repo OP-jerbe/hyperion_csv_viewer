@@ -33,15 +33,11 @@ class DataLoader:
         else:
             dir = r'\\opdata2\Company\PRODUCTION FOLDER\Production History'
 
-        caption = 'Choose CSV Files'
-        initial_dir = dir
-        file_types = 'CSV Files (*.csv);;All Files (*)'
-        # Open the file dialog
         file_paths, _ = QFileDialog.getOpenFileNames(
-            None,  # Parent widget, can be None
-            caption,  # Dialog title
-            initial_dir,  # Initial directory
-            file_types,  # Filter for file types
+            parent=None,
+            caption='Choose CSV Files',
+            dir=dir,
+            filter='CSV Files (*.csv);;All Files (*)',
         )
 
         return file_paths
