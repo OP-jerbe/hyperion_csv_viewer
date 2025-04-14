@@ -1,8 +1,13 @@
 import sys
+import webbrowser
+from pathlib import Path
+from pandas import DataFrame
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import (
+    QApplication,
+    QFileDialog,
     QGridLayout,
     QHBoxLayout,
     QLabel,
@@ -29,6 +34,97 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.installEventFilter(self)
         self.create_gui()
+
+    def _handle_select_csv(self) -> None:
+        data_loader = DataLoader()
+        file_paths = data_loader.get_file_paths()
+        if not file_paths:
+            return
+
+        self.df = data_loader.load_data(file_paths)
+        if self.df is None:
+            QMessageBox.critical(
+                self, 'Error', 'Failed to load data from the selected files.'
+            )
+            return
+
+        headers = self.df.columns.tolist()
+        headers[headers.index('Time')] = 'None'
+
+        for combo in self.combo_boxes:
+            combo.populate(headers)
+
+        self.canvas.display_csv_files(file_paths)
+
+    def _handle_plot(self) -> None:
+        combo_box_selections: list[str] = [
+            combo.currentText() for combo in self.combo_boxes
+        ]
+
+        if self.df is None:
+            QMessageBox.critical(
+                self, 'Error', 'No data loaded. Please load a CSV file first.'
+            )
+            return
+
+        if all(selection == 'None' for selection in combo_box_selections):
+            QMessageBox.warning(
+                self, '\nNo Data Selected', 'Please select at least one column to plot.'
+            )
+            return
+
+        plotter = Plotter(
+            title=self.title_input.text(), traces=combo_box_selections, data=self.df
+        )
+        fig = plotter.create_fig()
+
+        fig.show()
+
+    def _handle_exit(self) -> None:
+        QApplication.quit()
+
+    def _handle_save_plot_as_HTML(self) -> None:
+        combo_box_selections: list[str] = [
+            combo.currentText() for combo in self.combo_boxes
+        ]
+
+        if all(selection == 'None' for selection in combo_box_selections):
+            QMessageBox.warning(
+                self, '\nNo Data Selected', 'Please select at least one column to plot.'
+            )
+            return
+
+        if self.df is None:
+            QMessageBox.critical(
+                self, 'Error', 'No data loaded. Please load a CSV file first.'
+            )
+            return
+
+        file_path, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption='Save figure',
+            filter='HTML Files (*.html);;All Files (*)',
+        )
+
+        plotter = Plotter(
+            title=self.title_input.text(), traces=combo_box_selections, data=self.df
+        )
+        fig = plotter.create_fig()
+        fig.write_html(file_path)
+
+    def _handle_open_quick_start_guide(self) -> None:
+        script_dir = Path(__file__).resolve()
+        root_dir = script_dir.parents[2]  # 0=indexed, so 2 = two levels up
+        print(f'{root_dir = }')
+        filepath = root_dir / 'assets/quick_start_guide.html'
+
+        if not filepath.is_file():
+            QMessageBox.critical(
+                self, 'Error', 'An error occurred.\n\nUnable to find quick start guide.'
+            )
+            return
+
+        webbrowser.open_new_tab(filepath.resolve().as_uri())
 
     def create_gui(self) -> None:
         # Set the size of the main window
@@ -59,13 +155,19 @@ class MainWindow(QMainWindow):
 
         # Create the QAction objects for the menus
         self.exit_option: QAction = QAction('Exit', self)
-        self.save_3D_surface_option: QAction = QAction('Save Plot as HTML', self)
+        self.save_plot_option: QAction = QAction('Save Plot as HTML', self)
         self.open_quick_start_guide: QAction = QAction('Quick Start Guide', self)
 
         # Add the action objects to the menu bar items
         self.file_menu.addAction(self.exit_option)
-        self.save_menu.addAction(self.save_3D_surface_option)
+        self.save_menu.addAction(self.save_plot_option)
         self.help_menu.addAction(self.open_quick_start_guide)
+
+        self.exit_option.triggered.connect(self._handle_exit)
+        self.save_plot_option.triggered.connect(self._handle_save_plot_as_HTML)
+        self.open_quick_start_guide.triggered.connect(
+            self._handle_open_quick_start_guide
+        )
 
         # Create title label and input box
         self.title_label: QLabel = QLabel('Title:')
@@ -102,10 +204,10 @@ class MainWindow(QMainWindow):
         # Create the buttons
         self.select_csv_button: QPushButton = QPushButton('Select CSV Files')
         self.select_csv_button.setFixedSize(150, 40)
-        self.select_csv_button.clicked.connect(self.handle_select_csv)
+        self.select_csv_button.clicked.connect(self._handle_select_csv)
         self.plot_button: QPushButton = QPushButton('Plot Data')
         self.plot_button.setFixedSize(150, 40)
-        self.plot_button.clicked.connect(self.handle_plot)
+        self.plot_button.clicked.connect(self._handle_plot)
 
         # Create the canvas for displaying CSV data
         self.canvas: Canvas = Canvas()
@@ -154,47 +256,3 @@ class MainWindow(QMainWindow):
         container.setLayout(self.v_main_layout)
 
         self.setCentralWidget(container)
-
-    def handle_select_csv(self) -> None:
-        data_loader = DataLoader()
-        file_paths = data_loader.get_file_paths()
-        if not file_paths:
-            return
-
-        self.df = data_loader.load_data(file_paths)
-        if self.df is None:
-            QMessageBox.critical(
-                self, 'Error', 'Failed to load data from the selected files.'
-            )
-            return
-
-        headers = self.df.columns.tolist()
-        headers[headers.index('Time')] = 'None'
-
-        for combo in self.combo_boxes:
-            combo.populate(headers)
-
-        self.canvas.display_csv_files(file_paths)
-
-    def handle_plot(self) -> None:
-        combo_box_selections: list[str] = [
-            combo.currentText() for combo in self.combo_boxes
-        ]
-
-        if all(selection == 'None' for selection in combo_box_selections):
-            QMessageBox.warning(
-                self, '\nNo Data Selected', 'Please select at least one column to plot.'
-            )
-            return
-
-        if self.df is None:
-            QMessageBox.critical(
-                self, 'Error', 'No data loaded. Please load a CSV file first.'
-            )
-            return
-        plotter = Plotter(
-            title=self.title_input.text(), traces=combo_box_selections, data=self.df
-        )
-        fig = plotter.create_fig()
-
-        fig.show()
