@@ -178,7 +178,7 @@ class MainWindow(QMainWindow):
 
     def handle_plot(self) -> None:
         combo_box_selections: list[str] = [
-            combo.current_text() for combo in self.combo_boxes
+            combo.currentText() for combo in self.combo_boxes
         ]
 
         print(combo_box_selections)

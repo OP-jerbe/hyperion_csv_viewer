@@ -14,7 +14,3 @@ class ComboBox(QComboBox):
         self.clear()
         self.addItems(headers)
         self.setEditable(False)
-
-    def current_text(self) -> str:
-        """Returns the current text selected in the combo box."""
-        return self.currentText()
