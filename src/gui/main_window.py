@@ -45,7 +45,8 @@ class MainWindow(QMainWindow):
         # Set the style of the window
         apply_stylesheet(self, theme='dark_lightgreen.xml', invert_secondary=True)
         self.setStyleSheet(
-            self.styleSheet() + """QLineEdit, QTextEdit {color: lightgreen;}"""
+            self.styleSheet()
+            + """QLineEdit, QTextEdit, QCombobox {color: lightgreen;}"""
         )
 
         # Create the menu bar
@@ -108,9 +109,6 @@ class MainWindow(QMainWindow):
 
         # Create the canvas for displaying CSV data
         self.canvas: Canvas = Canvas()
-        self.canvas.display_csv_files(
-            ['file1.csv', 'file2.csv', 'file3.csv']
-        )  # example data for testing
 
         # Create the layout for the main window
         self.h_title_layout: QHBoxLayout = QHBoxLayout()
@@ -120,14 +118,17 @@ class MainWindow(QMainWindow):
         self.h_title_layout.setSpacing(0)
 
         self.g_combo_box_layout: QGridLayout = QGridLayout()
+        spacer_widget = QWidget()
+        spacer_widget.setFixedHeight(5)
         self.g_combo_box_layout.addWidget(self.plot1_label, 0, 0)
         self.g_combo_box_layout.addWidget(self.plot2_label, 0, 1)
         self.g_combo_box_layout.addWidget(self.plot1_combo, 1, 0)
         self.g_combo_box_layout.addWidget(self.plot2_combo, 1, 1)
-        self.g_combo_box_layout.addWidget(self.plot3_label, 2, 0)
-        self.g_combo_box_layout.addWidget(self.plot4_label, 2, 1)
-        self.g_combo_box_layout.addWidget(self.plot3_combo, 3, 0)
-        self.g_combo_box_layout.addWidget(self.plot4_combo, 3, 1)
+        self.g_combo_box_layout.addWidget(spacer_widget, 2, 0, 1, 2)
+        self.g_combo_box_layout.addWidget(self.plot3_label, 3, 0)
+        self.g_combo_box_layout.addWidget(self.plot4_label, 3, 1)
+        self.g_combo_box_layout.addWidget(self.plot3_combo, 4, 0)
+        self.g_combo_box_layout.addWidget(self.plot4_combo, 4, 1)
         self.g_combo_box_layout.setColumnStretch(0, 1)
         self.g_combo_box_layout.setColumnStretch(1, 1)
         self.g_combo_box_layout.setContentsMargins(10, 10, 10, 0)
@@ -176,23 +177,26 @@ class MainWindow(QMainWindow):
         self.canvas.display_csv_files(file_paths)
 
     def handle_plot(self) -> None:
-        selected_headers: list[str] = [
-            combo.current_text() for combo in self.combo_boxes if combo.current_text()
+        combo_box_selections: list[str] = [
+            combo.current_text() for combo in self.combo_boxes
         ]
 
-    #     if not selected_headers:
-    #         QMessageBox.warning(
-    #             self, 'No Data Selected', 'Please select at least one column to plot.'
-    #         )
-    #         return
+        print(combo_box_selections)
 
-    #     # Create and configure the plot
-    #     plotter = Plotter(title=self.title_input.text(), traces=selected_headers)
-    #     fig = plotter.create_fig()
+        if all(selection == 'None' for selection in combo_box_selections):
+            QMessageBox.warning(
+                self, '\nNo Data Selected', 'Please select at least one column to plot.'
+            )
+            return
 
-    #     # Now you'd probably add traces and render the figure.
-    #     # For example:
-    #     for col in selected_headers:
-    #         fig.add_trace(go.Scatter(x=self.df['Time'], y=self.df[col], name=col))
+        if self.df is None:
+            QMessageBox.critical(
+                self, 'Error', 'No data loaded. Please load a CSV file first.'
+            )
+            return
+        plotter = Plotter(
+            title=self.title_input.text(), traces=combo_box_selections, data=self.df
+        )
+        fig = plotter.create_fig()
 
-    #     fig.show()
+        fig.show()
