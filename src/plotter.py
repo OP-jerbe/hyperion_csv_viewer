@@ -16,9 +16,10 @@ class Plotter:
         """Creates the plotly figure and applies standard formatting."""
         fig: Figure = Figure()
 
-        data_to_plot = {
-            col: self.df[col].tolist() for col in self.traces if col != 'None'
-        }
+        data_to_plot = [
+            (col, self.df[col].tolist() if col != 'None' else None)
+            for col in self.traces
+        ]
 
         self.df['Time'] = to_datetime(self.df['Time'], format='%m/%d/%Y %I:%M:%S %p')
         time = self.df['Time'].tolist()
@@ -33,7 +34,10 @@ class Plotter:
             3: 0.00,  # yaxis4 (left, base)
         }
 
-        for i, (column_name, y_data) in enumerate(data_to_plot.items()):
+        for i, (column_name, y_data) in enumerate(data_to_plot):
+            if column_name == 'None':
+                continue
+
             yaxis_name = f'y{i + 1}'  # y, y2, y3, etc.
             trace_yaxis = 'y' if i == 0 else yaxis_name
 
