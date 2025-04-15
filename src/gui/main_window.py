@@ -1,7 +1,6 @@
 import sys
 import webbrowser
 from pathlib import Path
-from pandas import DataFrame
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
@@ -27,6 +26,7 @@ from gui.canvas import Canvas
 from gui.combo_box import ComboBox
 from loader import DataLoader
 from plotter import Plotter
+from threaded_plotter import PlotWorker
 
 
 class MainWindow(QMainWindow):
@@ -79,12 +79,24 @@ class MainWindow(QMainWindow):
             )
             return
 
-        plotter = Plotter(
-            title=self.title_input.text(), traces=combo_box_selections, data=self.df
-        )
-        fig = plotter.create_fig()
+        # Disable plot button or show a loading message if desired
+        self.save_plot_option.setEnabled(False)
+        self.plot_button.setEnabled(False)
+        self.plot_button.setText('Loading...')
 
-        fig.show()
+        # Start the PlotWorker thread
+        self.plot_worker = PlotWorker(
+            title=self.title_input.text(),
+            traces=combo_box_selections,
+            data=self.df,
+        )
+        self.plot_worker.finished.connect(self._handle_plot_finished)
+        self.plot_worker.start()
+
+    def _handle_plot_finished(self) -> None:
+        self.plot_button.setText('Plot Data')
+        self.plot_button.setEnabled(True)
+        self.save_plot_option.setEnabled(True)
 
     def _handle_exit(self) -> None:
         QApplication.quit()
@@ -106,17 +118,26 @@ class MainWindow(QMainWindow):
             )
             return
 
-        file_path, _ = QFileDialog.getSaveFileName(
+        self.save_plot_option.setEnabled(False)
+        self.plot_button.setEnabled(False)
+        self.plot_button.setText('Saving...')
+
+        save_loc, _ = QFileDialog.getSaveFileName(
             parent=self,
             caption='Save figure',
             filter='HTML Files (*.html);;All Files (*)',
         )
 
-        plotter = Plotter(
-            title=self.title_input.text(), traces=combo_box_selections, data=self.df
+        self.plot_worker = PlotWorker(
+            title=self.title_input.text(),
+            traces=combo_box_selections,
+            data=self.df,
+            show=False,
+            write_html=True,
+            save_loc=save_loc,
         )
-        fig = plotter.create_fig()
-        fig.write_html(file_path)
+        self.plot_worker.finished.connect(self._handle_plot_finished)
+        self.plot_worker.start()
 
     def _handle_open_quick_start_guide(self) -> None:
         root_dir = self._get_root_dir()
@@ -137,6 +158,7 @@ class MainWindow(QMainWindow):
         root_dir: Path = self._get_root_dir()
         icon_path: str = str(root_dir / 'assets' / 'icon.ico')
         self.setWindowIcon(QIcon(icon_path))
+        self.setWindowTitle('Hyperion CSV Plotter')
 
         # Set the style of the window
         apply_stylesheet(self, theme='dark_lightgreen.xml', invert_secondary=True)
