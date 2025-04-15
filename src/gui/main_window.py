@@ -25,13 +25,13 @@ from qt_material import apply_stylesheet
 from gui.canvas import Canvas
 from gui.combo_box import ComboBox
 from loader import DataLoader
-from plotter import Plotter
 from threaded_plotter import PlotWorker
 
 
 class MainWindow(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, version: str) -> None:
         super().__init__()
+        self.version = version
         self.installEventFilter(self)
         self.create_gui()
 
@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
         root_dir: Path = self._get_root_dir()
         icon_path: str = str(root_dir / 'assets' / 'icon.ico')
         self.setWindowIcon(QIcon(icon_path))
-        self.setWindowTitle('Hyperion CSV Plotter')
+        self.setWindowTitle(f'Hyperion CSV Plotter v{self.version}')
 
         # Set the style of the window
         apply_stylesheet(self, theme='dark_lightgreen.xml', invert_secondary=True)
