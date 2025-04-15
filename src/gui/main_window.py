@@ -22,10 +22,10 @@ from PySide6.QtWidgets import (
 )
 from qt_material import apply_stylesheet
 
-from gui.canvas import Canvas
-from gui.combo_box import ComboBox
-from loader import DataLoader
-from threaded_plotter import PlotWorker
+from src.gui.canvas import Canvas
+from src.gui.combo_box import ComboBox
+from src.loader import DataLoader
+from src.threaded_plotter import PlotWorker
 
 
 class MainWindow(QMainWindow):

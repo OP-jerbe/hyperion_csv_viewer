@@ -1,6 +1,6 @@
 from PySide6.QtCore import QThread, Signal
 from plotly.graph_objects import Figure
-from plotter import Plotter
+from src.plotter import Plotter
 
 
 class PlotWorker(QThread):
