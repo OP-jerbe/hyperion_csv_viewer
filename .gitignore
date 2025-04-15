@@ -1,7 +1,7 @@
-/assets
 /data
 /outputs
 /dist
 /build
 /src/__pycache__
 /src/gui/__pycache__
+pyinstaller_instructions.txt

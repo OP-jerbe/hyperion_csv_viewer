@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Start Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1,
+        h2 {
+            color: #2c3e50;
+        }
+
+        code {
+            background-color: #eee;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .tip {
+            background-color: #eafaf1;
+            border-left: 4px solid #2ecc71;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Quick Start Guide</h1>
+
+    <p>This application allows users to load, view, and analyze time-series CSV data files using an interactive
+        Plotly-based interface.</p>
+
+    <h2>Getting Started</h2>
+    <ol>
+        <li>Open the application. The main window will launch.</li>
+        <li>Click the <strong>"Load CSV Files"</strong> button to select one or more CSV files from the file browser.
+        </li>
+        <li>After selection, the application will display the selected CSV files in the canvas at the bottom of the
+            window and the dropdown boxes will be populated with the headers of the data columns in CSV file (excluding
+            Time).</li>
+        <li>Select up to four data columns from the dropdown boxes to plot against time.</li>
+        <li>Click either <strong>"Plot Data"</strong> to generate an interactive Plotly graph or, from the menu bar,
+            select <strong>"Save" > "Save Plot as HTML"</strong> to save an HTML file of the interactive Plotly graph
+        </li>
+    </ol>
+
+    <div class="tip">
+        Tip: Give your plot a meaningful title before saving it.
+    </div>
+
+    <h2>Plotly Graph Features</h2>
+    <p>The interactive Plotly graph provides powerful tools for exploring your data:</p>
+
+    <ul>
+        <li><strong>Zoom by dragging</strong>: Click and drag a box to zoom into a specific region of the plot.</li>
+        <li><strong>Pan mode</strong>: Use the toolbar or hold <code>Shift</code> and drag the graph to pan around.</li>
+        <li><strong>Zoom in/out</strong>: Use the toolbar buttons to zoom in and out.</li>
+        <li><strong>Reset axes</strong>: Click the home icon in the top-right to reset the view to default.</li>
+        <li><strong>Manually enter axis limits</strong>: Click on any axis limit to type in a custom range.</li>
+        <li><strong>Scaling axis limits</strong>: Click and drag any axis limit to change the scaling.</li>
+        <li><strong>Pan Individual Axes</strong>: Click and drag from the center of any axis to pan that axis without
+            affecting other axes.</li>
+        <li><strong>Toggle traces</strong>: Click trace names in the legend to hide/show them dynamically. Double-click
+            a trace to hide all other traces.</li>
+    </ul>
+
+    <div class="tip">
+        Tip: You can also save the plot as a PNG file by using the toolbar menu.
+    </div>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+        <li>If no data appears, double-check that your CSV file contains a <code>Time</code> column.</li>
+        <li>Only CSV files with standard column formatting are supported.</li>
+        <li>Reach out to the development team if you experience loading or rendering issues.</li>
+    </ul>
+
+    <hr>
+    <p style="font-size: 0.9em;">App Version: 1.0 | Powered by Plotly & PySide6</p>
+
+</body>
+
+</html>
