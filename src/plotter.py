@@ -1,13 +1,12 @@
 import plotly.graph_objects as go
 import plotly.io as pio
-from plotly.graph_objects import Figure
 from pandas import DataFrame, to_datetime
-
-pio.renderers.default = 'browser'
+from plotly.graph_objects import Figure
 
 
 class Plotter:
     def __init__(self, title: str, traces: list[str], data: DataFrame) -> None:
+        pio.renderers.default = 'browser'
         self.title = title
         self.traces = traces
         self.df = data
@@ -35,28 +34,14 @@ class Plotter:
         }
 
         for i, (column_name, y_data) in enumerate(data_to_plot):
-            if column_name == 'None':
-                continue
-
+            yaxis_layout_key = 'yaxis' if i == 0 else f'yaxis{i + 1}'
             yaxis_name = f'y{i + 1}'  # y, y2, y3, etc.
             trace_yaxis = 'y' if i == 0 else yaxis_name
-
-            fig.add_trace(
-                go.Scatter(
-                    x=time,
-                    y=y_data,
-                    mode='lines',
-                    name=column_name,
-                    yaxis=trace_yaxis,
-                    line=dict(color=axis_colors[i % len(axis_colors)]),
-                )
-            )
-
-            yaxis_layout_key = 'yaxis' if i == 0 else f'yaxis{i + 1}'
             overlaying = 'y' if i > 0 else None
             side = 'right' if i < 2 else 'left'
             anchor = 'x' if i % 2 == 0 else 'free'
             tickformat = '.2e' if column_name == 'Source Pressure (mBar)' else None
+            visible = True if column_name != 'None' else False
 
             yaxis_layout_dict = dict(
                 anchor=anchor,
@@ -68,12 +53,21 @@ class Plotter:
                 tickfont=dict(color=axis_colors[i]),
                 tickformat=tickformat,
                 title=column_name,
+                visible=visible,
+                zeroline=False,
             )
 
-            # Remove None values
-            yaxis_layout_dict = {
-                k: v for k, v in yaxis_layout_dict.items() if v is not None
-            }
+            fig.add_trace(
+                go.Scatter(
+                    x=time,
+                    y=y_data,
+                    line=dict(color=axis_colors[i]),
+                    mode='lines',
+                    name=column_name,
+                    yaxis=trace_yaxis,
+                    visible=visible,
+                )
+            )
 
             fig.update_layout({yaxis_layout_key: yaxis_layout_dict})
 
