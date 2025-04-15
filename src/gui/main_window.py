@@ -35,6 +35,12 @@ class MainWindow(QMainWindow):
         self.installEventFilter(self)
         self.create_gui()
 
+    def _get_root_dir(self) -> Path:
+        if getattr(sys, 'frozen', False):  # Check if running from the PyInstaller EXE
+            return Path(getattr(sys, '_MEIPASS', '.'))
+        else:  # Running in a normal Python environment
+            return Path(__file__).resolve().parents[2]
+
     def _handle_select_csv(self) -> None:
         data_loader = DataLoader()
         file_paths = data_loader.get_file_paths()
@@ -61,15 +67,15 @@ class MainWindow(QMainWindow):
             combo.currentText() for combo in self.combo_boxes
         ]
 
-        if self.df is None:
-            QMessageBox.critical(
-                self, 'Error', 'No data loaded. Please load a CSV file first.'
-            )
-            return
-
         if all(selection == 'None' for selection in combo_box_selections):
             QMessageBox.warning(
                 self, '\nNo Data Selected', 'Please select at least one column to plot.'
+            )
+            return
+
+        if self.df is None:
+            QMessageBox.critical(
+                self, 'Error', 'No data loaded. Please load a CSV file first.'
             )
             return
 
@@ -113,29 +119,23 @@ class MainWindow(QMainWindow):
         fig.write_html(file_path)
 
     def _handle_open_quick_start_guide(self) -> None:
-        script_dir = Path(__file__).resolve()
-        root_dir = script_dir.parents[2]  # 0=indexed, so 2 = two levels up
-        print(f'{root_dir = }')
-        filepath = root_dir / 'assets/quick_start_guide.html'
+        root_dir = self._get_root_dir()
+        file_path = root_dir / 'assets' / 'quick_start_guide.html'
 
-        if not filepath.is_file():
+        if not file_path.is_file():
             QMessageBox.critical(
                 self, 'Error', 'An error occurred.\n\nUnable to find quick start guide.'
             )
             return
 
-        webbrowser.open_new_tab(filepath.resolve().as_uri())
+        webbrowser.open_new_tab(file_path.resolve().as_uri())
 
     def create_gui(self) -> None:
         # Set the size of the main window
         self.setFixedSize(420, 500)
 
-        # Setup the title bar for the window
-        self.setWindowTitle('Hyperion Test Data Viewer')
-        if hasattr(sys, 'frozen'):  # Check if running from the Pyinstaller EXE
-            icon_path = sys._MEIPASS + '/assets/icon.ico'  # type: ignore
-        else:
-            icon_path = './assets/icon.ico'  # Use the local icon file in dev mode
+        root_dir: Path = self._get_root_dir()
+        icon_path: str = str(root_dir / 'assets' / 'icon.ico')
         self.setWindowIcon(QIcon(icon_path))
 
         # Set the style of the window
