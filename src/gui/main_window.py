@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
         root_dir: Path = self._get_root_dir()
         icon_path: str = str(root_dir / 'assets' / 'icon.ico')
         self.setWindowIcon(QIcon(icon_path))
-        self.setWindowTitle(f'Hyperion CSV Plotter v{self.version}')
+        self.setWindowTitle(f'Hyperion CSV Viewer v{self.version}')
 
         # Set the style of the window
         apply_stylesheet(self, theme='dark_lightgreen.xml', invert_secondary=True)
