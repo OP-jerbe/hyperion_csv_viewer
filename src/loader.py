@@ -57,7 +57,7 @@ class DataLoader:
             self.df = pd.concat(map(pd.read_csv, file_paths), ignore_index=True)
         except Exception as e:
             print(f'Error loading CSV files: {e}')
-            return None
+            return
 
         if self._check_for_time_header() is False:
             raise ValueError(

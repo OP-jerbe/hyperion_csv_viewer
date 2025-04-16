@@ -6,7 +6,7 @@ class Canvas(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.label = QLabel('Selected csv files:')
+        self.label = QLabel('Selected csv files: (0)')
         self.text_display = QTextEdit()
         self.text_display.setReadOnly(True)
         self.text_display.setStyleSheet("""
@@ -22,3 +22,4 @@ class Canvas(QWidget):
         self.text_display.clear()
         filenames = [Path(path).name for path in file_list]
         self.text_display.append('\n'.join(filenames))
+        self.label.setText(f'Selected csv files: ({len(file_list)})')

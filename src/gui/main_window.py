@@ -1,6 +1,7 @@
 import sys
 import webbrowser
 from pathlib import Path
+from pandas import DataFrame
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
@@ -26,6 +27,7 @@ from src.gui.canvas import Canvas
 from src.gui.combo_box import ComboBox
 from src.loader import DataLoader
 from src.threaded_plotter import PlotWorker
+from src.threaded_loader import LoadDataWorker
 
 
 class MainWindow(QMainWindow):
@@ -43,12 +45,25 @@ class MainWindow(QMainWindow):
 
     def _handle_select_csv(self) -> None:
         data_loader = DataLoader()
-        file_paths = data_loader.get_file_paths()
+        file_paths: list[str] = data_loader.get_file_paths()
         if not file_paths:
             return
 
-        self.df = data_loader.load_data(file_paths)
-        if self.df is None:
+        self.select_csv_button.setEnabled(False)
+        self.select_csv_button.setText('Loading...')
+
+        # Start the LoadDataWorker thread
+        self.data_loader_worker = LoadDataWorker(file_paths)
+        self.data_loader_worker.finished.connect(self._handle_csvs_loaded)
+        self.data_loader_worker.finished.connect(self.data_loader_worker.deleteLater)
+        self.data_loader_worker.start()
+
+    def _handle_csvs_loaded(self, df: DataFrame) -> None:
+        self.df = df
+        self.select_csv_button.setText('Select CSV Files')
+        self.select_csv_button.setEnabled(True)
+
+        if self.df is None or self.df.empty:
             QMessageBox.critical(
                 self, 'Error', 'Failed to load data from the selected files.'
             )
@@ -56,11 +71,10 @@ class MainWindow(QMainWindow):
 
         headers = self.df.columns.tolist()
         headers[headers.index('Time')] = 'None'
-
         for combo in self.combo_boxes:
             combo.populate(headers)
 
-        self.canvas.display_csv_files(file_paths)
+        self.canvas.display_csv_files(self.data_loader_worker.file_list)
 
     def _handle_plot(self) -> None:
         combo_box_selections: list[str] = [
