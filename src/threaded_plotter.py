@@ -25,14 +25,9 @@ class PlotWorker(QThread):
 
     def run(self) -> None:
         plotter = Plotter(self.title, self.traces, self.data)
+        fig = plotter.create_fig()
         if self.show:
-            fig = plotter.create_fig()
             fig.show()
-            self.finished.emit(fig)
-        if not self.save_loc:
-            self.finished.emit(None)
-            return
-        elif self.write_html:
-            fig = plotter.create_fig()
+        if self.write_html:
             fig.write_html(self.save_loc)
-            self.finished.emit(fig)
+        self.finished.emit(fig)

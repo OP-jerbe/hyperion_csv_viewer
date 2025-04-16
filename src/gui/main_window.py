@@ -118,15 +118,18 @@ class MainWindow(QMainWindow):
             )
             return
 
-        self.save_plot_option.setEnabled(False)
-        self.plot_button.setEnabled(False)
-        self.plot_button.setText('Saving...')
-
         save_loc, _ = QFileDialog.getSaveFileName(
             parent=self,
             caption='Save figure',
             filter='HTML Files (*.html);;All Files (*)',
         )
+
+        if not save_loc:
+            return
+
+        self.save_plot_option.setEnabled(False)
+        self.plot_button.setEnabled(False)
+        self.plot_button.setText('Saving...')
 
         self.plot_worker = PlotWorker(
             title=self.title_input.text(),
