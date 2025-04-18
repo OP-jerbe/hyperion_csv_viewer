@@ -54,7 +54,8 @@
         <li>After selection, the application will display the selected CSV files in the canvas at the bottom of the
             window and the dropdown boxes will be populated with the headers of the data columns in CSV file (excluding
             Time).</li>
-        <li>Select up to four data columns from the dropdown boxes to plot against time.</li>
+        <li>Select up to four data columns from the dropdown boxes to plot.</li>
+        <li>Select the x-axis variable from the dropdown box. Time is default.</li>
         <li>Click either <strong>"Plot Data"</strong> to generate an interactive Plotly graph or, from the menu bar,
             select <strong>"Save" > "Save Plot as HTML"</strong> to save an HTML file of the interactive Plotly graph
         </li>
@@ -89,8 +90,8 @@
         <li>If no data appears, double-check that your CSV file contains a <code>Time</code> column and that the
             datetime format is <code>MM/DD/YYYY hh:mm:ss AM/PM</code>.</li>
         <li>Only CSV files with standard column formatting are supported.</li>
-        <li>Since the application plots time series data, CSV files must be loaded in chronological order. Check the
-            <strong>Selected csv files</strong> canvas to ensure the files are in the correct order.
+        <li>CSV files should be loaded in chronological order. Check the <strong>Selected csv files</strong> canvas to
+            ensure the files are in the correct order.
         </li>
         <li>Ensure that the CSV files are not too large or that too many CSV files are loaded at once. The application
             may struggle with very large datasets.</li>
@@ -99,7 +100,7 @@
     </ul>
 
     <hr>
-    <p style="font-size: 0.9em;">App Version: 2.0.0 | Powered by Plotly & PySide6</p>
+    <p style="font-size: 0.9em;">App Version: 2.1.0 | Powered by Plotly & PySide6</p>
 
 </body>
 

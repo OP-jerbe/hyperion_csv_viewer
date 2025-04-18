@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
             return
 
         headers = self.df.columns.tolist()
+        self.x_axis_combo.populate(headers)
         headers[headers.index('Time')] = 'None'
         for combo in self.combo_boxes:
             combo.populate(headers)
@@ -101,6 +102,7 @@ class MainWindow(QMainWindow):
         # Start the PlotWorker thread
         self.plot_worker = PlotWorker(
             title=self.title_input.text(),
+            x_axis=self.x_axis_combo.currentText(),
             traces=combo_box_selections,
             data=self.df,
         )
@@ -147,6 +149,7 @@ class MainWindow(QMainWindow):
 
         self.plot_worker = PlotWorker(
             title=self.title_input.text(),
+            x_axis=self.x_axis_combo.currentText(),
             traces=combo_box_selections,
             data=self.df,
             show=False,
@@ -170,7 +173,7 @@ class MainWindow(QMainWindow):
 
     def create_gui(self) -> None:
         # Set the size of the main window
-        self.setFixedSize(420, 500)
+        self.setFixedSize(420, 550)
 
         root_dir: Path = self._get_root_dir()
         icon_path: str = str(root_dir / 'assets' / 'icon.ico')
@@ -227,6 +230,8 @@ class MainWindow(QMainWindow):
         self.plot3_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.plot4_label: QLabel = QLabel('Plot 4')
         self.plot4_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.x_axis_label: QLabel = QLabel('X-Axis')
+        self.x_axis_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         # Create the plot combo boxes
         self.plot1_combo: ComboBox = ComboBox()
@@ -239,6 +244,7 @@ class MainWindow(QMainWindow):
             self.plot3_combo,
             self.plot4_combo,
         ]
+        self.x_axis_combo: ComboBox = ComboBox()
 
         # Create the buttons
         self.select_csv_button: QPushButton = QPushButton('Select CSV Files')
@@ -270,6 +276,11 @@ class MainWindow(QMainWindow):
         self.g_combo_box_layout.addWidget(self.plot4_label, 3, 1)
         self.g_combo_box_layout.addWidget(self.plot3_combo, 4, 0)
         self.g_combo_box_layout.addWidget(self.plot4_combo, 4, 1)
+        self.g_combo_box_layout.addWidget(spacer_widget, 5, 0, 1, 2)
+        self.g_combo_box_layout.addWidget(self.x_axis_label, 6, 0, 1, 2)
+        self.g_combo_box_layout.addWidget(
+            self.x_axis_combo, 7, 0, 1, 2, alignment=Qt.AlignmentFlag.AlignHCenter
+        )
         self.g_combo_box_layout.setColumnStretch(0, 1)
         self.g_combo_box_layout.setColumnStretch(1, 1)
         self.g_combo_box_layout.setContentsMargins(10, 10, 10, 0)

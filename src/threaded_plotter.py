@@ -9,6 +9,7 @@ class PlotWorker(QThread):
     def __init__(
         self,
         title: str,
+        x_axis: str,
         traces: list[str],
         data,
         show: bool = True,
@@ -17,6 +18,7 @@ class PlotWorker(QThread):
     ) -> None:
         super().__init__()
         self.title = title
+        self.x_axis = x_axis
         self.traces = traces
         self.data = data
         self.show = show
@@ -24,7 +26,7 @@ class PlotWorker(QThread):
         self.save_loc = save_loc
 
     def run(self) -> None:
-        plotter = Plotter(self.title, self.traces, self.data)
+        plotter = Plotter(self.title, self.x_axis, self.traces, self.data)
         fig = plotter.create_fig()
         if self.show:
             fig.show()

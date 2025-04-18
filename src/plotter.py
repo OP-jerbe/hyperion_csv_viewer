@@ -5,9 +5,12 @@ from plotly.graph_objects import Figure
 
 
 class Plotter:
-    def __init__(self, title: str, traces: list[str], data: DataFrame) -> None:
+    def __init__(
+        self, title: str, x_axis: str, traces: list[str], data: DataFrame
+    ) -> None:
         pio.renderers.default = 'browser'
         self.title = title
+        self.x_axis = x_axis
         self.traces = traces
         self.df = data
 
@@ -20,8 +23,12 @@ class Plotter:
             for col in self.traces
         ]
 
-        self.df['Time'] = to_datetime(self.df['Time'], format='%m/%d/%Y %I:%M:%S %p')
-        time = self.df['Time'].tolist()
+        time: list = []
+        if self.x_axis == 'Time':
+            self.df['Time'] = to_datetime(
+                self.df['Time'], format='%m/%d/%Y %I:%M:%S %p'
+            )
+            time = self.df['Time'].tolist()
 
         axis_colors = ['red', 'white', 'limegreen', 'yellow']
 
@@ -42,6 +49,7 @@ class Plotter:
             anchor = 'x' if i % 2 == 0 else 'free'
             tickformat = '.2e' if column_name == 'Source Pressure (mBar)' else None
             visible = True if column_name != 'None' else False
+            x_data = time if self.x_axis == 'Time' else self.df[self.x_axis].tolist()
 
             yaxis_layout_dict = dict(
                 anchor=anchor,
@@ -59,7 +67,7 @@ class Plotter:
 
             fig.add_trace(
                 go.Scatter(
-                    x=time,
+                    x=x_data,
                     y=y_data,
                     line=dict(color=axis_colors[i]),
                     mode='lines',
@@ -71,11 +79,16 @@ class Plotter:
 
             fig.update_layout({yaxis_layout_key: yaxis_layout_dict})
 
+        xaxis_title = self.x_axis
+        if xaxis_title == 'Time':
+            xaxis_title = None
+
         fig.update_layout(
             paper_bgcolor='rgba(132,132,132,1)',
             plot_bgcolor='black',
             legend_font_color='black',
             title=dict(text=self.title, font=dict(size=28), x=0.5),
+            xaxis_title=xaxis_title,
             legend=dict(
                 orientation='h',
                 xanchor='center',

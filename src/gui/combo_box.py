@@ -5,7 +5,7 @@ class ComboBox(QComboBox):
     def __init__(self) -> None:
         super().__init__()
 
-        self.setFixedHeight(40)
+        self.setFixedSize(190, 40)
         self.setStyleSheet('color: lightgreen;')
         self.addItems(['None'])
 

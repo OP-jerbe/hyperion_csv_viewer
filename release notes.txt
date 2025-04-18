@@ -1,0 +1,21 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [2.0.0] - 2025-04-18
+### Added
+- Ability to choose the independent variable to plot against (x-axis selection)
+- Quick start guide in Help menu
+
+### Changed
+- GUI from tkinter to PySide6
+- Interactive plot-save from button to menu option
+
+### Deprecated
+- N/A
+
+### Removed
+- N/A
+
+### Fixed
+- Unrenedered plot 2, 3, or 4 when plot 1 was left unselected.
