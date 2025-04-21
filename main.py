@@ -1,11 +1,13 @@
-from PySide6.QtWidgets import QApplication
-from src.gui.main_window import MainWindow
 import sys
 from typing import NoReturn
 
+from PySide6.QtWidgets import QApplication
+
+from src.gui.main_window import MainWindow
+
 
 def run_app() -> NoReturn:
-    version = '2.0.0'
+    version = '2.1.0'
     app = QApplication([])
     window = MainWindow(version=version)  # Create the main window from main_window.py
     window.show()  # Show the window

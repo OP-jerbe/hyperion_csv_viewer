@@ -1,7 +1,9 @@
+import sys
+from pathlib import Path
+
 import pandas as pd
 from pandas import DataFrame
 from PySide6.QtWidgets import QFileDialog
-import sys
 
 
 class DataLoader:
@@ -17,7 +19,8 @@ class DataLoader:
                 return True
         return False
 
-    def get_file_paths(self) -> list[str]:
+    @staticmethod
+    def get_file_paths() -> list[str]:
         """
         Open a file dialog to select a CSV file.
 
@@ -41,6 +44,12 @@ class DataLoader:
         )
 
         return file_paths
+
+    @staticmethod
+    def get_data_size(file_paths: list[str]) -> float:
+        paths = [Path(path) for path in file_paths]
+        total_size_bytes = sum(p.stat().st_size for p in paths)
+        return total_size_bytes / (1024**2)
 
     def load_data(self, file_paths: list[str]) -> DataFrame | None:
         """
