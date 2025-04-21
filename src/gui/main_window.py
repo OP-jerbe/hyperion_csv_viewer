@@ -1,8 +1,8 @@
 import sys
 import webbrowser
 from pathlib import Path
-from pandas import DataFrame
 
+from pandas import DataFrame
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import (
@@ -26,8 +26,8 @@ from qt_material import apply_stylesheet
 from src.gui.canvas import Canvas
 from src.gui.combo_box import ComboBox
 from src.loader import DataLoader
-from src.threaded_plotter import PlotWorker
 from src.threaded_loader import LoadDataWorker
+from src.threaded_plotter import PlotWorker
 
 
 class MainWindow(QMainWindow):
@@ -44,8 +44,7 @@ class MainWindow(QMainWindow):
             return Path(__file__).resolve().parents[2]
 
     def _handle_select_csv(self) -> None:
-        data_loader = DataLoader()
-        file_paths: list[str] = data_loader.get_file_paths()
+        file_paths: list[str] = DataLoader.get_file_paths()
         if not file_paths:
             return
 

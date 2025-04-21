@@ -23,7 +23,7 @@ class Canvas(QWidget):
     def display_csv_files(self, file_list) -> None:
         """Call this method to update the display with a list of CSV filenames."""
         self.text_display.clear()
-        data_size: float = DataLoader.get_data_size(file_list)
+        data_size: float = DataLoader.get_total_file_size(file_list)
         filenames: list[str] = [Path(path).name for path in file_list]
         self.text_display.append('\n'.join(filenames))
         if len(file_list) == 1:

@@ -46,7 +46,16 @@ class DataLoader:
         return file_paths
 
     @staticmethod
-    def get_data_size(file_paths: list[str]) -> float:
+    def get_total_file_size(file_paths: list[str]) -> float:
+        """
+        Calculate the total size (in megabytes) of all files specified in the file path list.
+
+        Args:
+            file_paths (list[str]): List of file paths.
+
+        Returns:
+            float: Combined file size in megabytes (MB).
+        """
         paths = [Path(path) for path in file_paths]
         total_size_bytes = sum(p.stat().st_size for p in paths)
         return total_size_bytes / (1024**2)

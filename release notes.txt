@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2025-04-18
+### Added
+- Total file size calulation and display when csv files are selected. 
+
+### Changed
+- Display text above csv file display canvas.
+
+### Deprecated
+- N/A
+
+### Removed
+- N/A
+
+### Fixed
+- N/A
+
+
 ## [2.0.0] - 2025-04-18
 ### Added
 - Ability to choose the independent variable to plot against (x-axis selection)
