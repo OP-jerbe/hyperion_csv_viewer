@@ -1,23 +1,82 @@
+import csv
 import sys
 from pathlib import Path
+from typing import Iterator
 
 import pandas as pd
 from pandas import DataFrame
 from PySide6.QtWidgets import QFileDialog
+
+BYTES_TO_READ = 350
 
 
 class DataLoader:
     def __init__(self) -> None:
         self.df: DataFrame | None = None
 
-    def _check_for_time_header(self) -> bool:
-        """Checks that 'Time' is in headers list"""
-        if self.df is None:
+    @staticmethod
+    def _check_csv_headers(file_paths: list[str]) -> tuple[bool, list[str] | None]:
+        """
+        Validates that all provided CSV files contain a header row and that
+        the headers are identical across all files.
+
+        Args:
+            file_paths (list[str]): A list of file paths (as strings) to CSV files.
+
+        Returns:
+            tuple[bool, list[str] | None]:
+                - A tuple where the first element is True if all CSV files contain
+                a header and share the same structure, otherwise False.
+                - The second element is the list of headers if validation passed,
+                or None if it failed.
+        """
+
+        paths = [Path(file_path) for file_path in file_paths]
+        reference_headers: list[str] | None = None
+
+        for path in paths:
+            try:
+                with path.open('r', newline='', encoding='utf-8') as f:
+                    sample: str = f.read(BYTES_TO_READ)
+                    f.seek(0)  # send the file cursor to the beginning of the file
+
+                    has_header = csv.Sniffer().has_header(sample)
+                    if not has_header:
+                        return False, None
+
+                    reader: Iterator[list[str]] = csv.reader(f)
+                    headers: list[str] = next(reader)
+
+                    if reference_headers is None:
+                        reference_headers = headers
+                    elif headers != reference_headers:
+                        return False, None
+
+            except Exception as e:
+                print(
+                    f'Error reading "{path.name}": {str(e)}'
+                )  # change this to a error pop up message maybe...?
+                return False, None
+
+        return True, reference_headers
+
+    @staticmethod
+    def _check_for_time_header(headers: list[str] | None) -> bool:
+        """
+        Checks if the provided list of headers contains a 'Time' column.
+
+        Args:
+            headers (list[str] | None): A list of column headers or None.
+
+        Returns:
+            bool: True if 'Time' is present in the headers, otherwise False.
+        """
+        if headers is None:
             return False
-        for string in ('Time',):
-            if string in self.df.columns:
-                return True
-        return False
+        if 'Time' not in headers:
+            return False
+
+        return True
 
     @staticmethod
     def get_file_paths() -> list[str]:
@@ -71,16 +130,21 @@ class DataLoader:
             DataFrame | None: The loaded DataFrame or None.
         """
 
+        has_headers, headers = self._check_csv_headers(file_paths)
+
+        if has_headers is False:
+            raise ValueError(
+                'Inconsistent headers in the CSV files. Please check the file format.'
+            )
+
+        if self._check_for_time_header(headers) is False:
+            raise ValueError('"Time" header not found in csv file.')
+
         try:
             self.df = pd.concat(map(pd.read_csv, file_paths), ignore_index=True)
         except Exception as e:
             print(f'Error loading CSV files: {e}')
             return
-
-        if self._check_for_time_header() is False:
-            raise ValueError(
-                'No "Time" header in the CSV file. Please check the file format.'
-            )
 
         rename_map = {
             'Angular Intensity (mA/str)': 'Angular Intensity (mA/sr)',
@@ -97,13 +161,3 @@ class DataLoader:
         self.df.rename(columns=rename_map, inplace=True, errors='ignore')
 
         return self.df
-
-    def strip_time_from_headers(self) -> list[str] | None:
-        """Removes the 'Time' column header from the list of headers in the DataFrame."""
-        if self.df is None:
-            return
-        df_headers: list[str] = self.df.columns.tolist()
-        time_header: bool = self._check_for_time_header()
-        if time_header is True:
-            df_headers.remove('Time')
-        return df_headers
