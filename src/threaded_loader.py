@@ -1,6 +1,6 @@
-from PySide6.QtCore import QThread, Signal
-import pandas as pd
 from pandas import DataFrame
+from PySide6.QtCore import QThread, Signal
+
 from src.loader import DataLoader
 
 
