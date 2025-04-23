@@ -53,11 +53,25 @@ class MainWindow(QMainWindow):
 
         # Start the LoadDataWorker thread
         self.data_loader_worker = LoadDataWorker(file_paths)
-        self.data_loader_worker.finished.connect(self._handle_csvs_loaded)
+        self.data_loader_worker.finished.connect(self._handle_csvs_loaded_successfully)
         self.data_loader_worker.finished.connect(self.data_loader_worker.deleteLater)
+        self.data_loader_worker.error_occurred.connect(self._handle_csvs_loaded_failed)
+        self.data_loader_worker.error_occurred.connect(
+            self.data_loader_worker.deleteLater
+        )
         self.data_loader_worker.start()
 
-    def _handle_csvs_loaded(self, df: DataFrame) -> None:
+    def _handle_csvs_loaded_failed(self, error_message: str) -> None:
+        self.select_csv_button.setText('Select CSV Files')
+        self.select_csv_button.setEnabled(True)
+        QMessageBox.critical(
+            self,
+            'Error',
+            f'Failed to load data from the selected files.\n\n{error_message}',
+        )
+        return
+
+    def _handle_csvs_loaded_successfully(self, df: DataFrame) -> None:
         self.df = df
         self.select_csv_button.setText('Select CSV Files')
         self.select_csv_button.setEnabled(True)

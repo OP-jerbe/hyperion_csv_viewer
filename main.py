@@ -7,7 +7,7 @@ from src.gui.main_window import MainWindow
 
 
 def run_app() -> NoReturn:
-    version = '2.1.1'
+    version = '2.1.2'
     app = QApplication([])
     window = MainWindow(version=version)  # Create the main window from main_window.py
     window.show()  # Show the window
