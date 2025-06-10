@@ -1,5 +1,4 @@
 import sys
-import traceback
 from pathlib import Path
 
 import pandas as pd
@@ -41,7 +40,6 @@ class DataLoader:
 
             except Exception as e:
                 print(f'Error reading headers from "{path_str}": {str(e)}\n')
-                print(traceback.print_exc())
                 return False, None
 
         return True, reference_headers
