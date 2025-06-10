@@ -1,13 +1,12 @@
-import csv
 import sys
+import traceback
 from pathlib import Path
-from typing import Iterator
 
 import pandas as pd
 from pandas import DataFrame
 from PySide6.QtWidgets import QFileDialog
 
-BYTES_TO_READ = 350
+BYTES_TO_READ = 1000
 
 
 class DataLoader:
@@ -30,32 +29,19 @@ class DataLoader:
                 - The second element is the list of headers if validation passed,
                 or None if it failed.
         """
-
-        paths = [Path(file_path) for file_path in file_paths]
         reference_headers: list[str] | None = None
 
-        for path in paths:
+        for path_str in file_paths:
             try:
-                with path.open('r', newline='', encoding='utf-8') as f:
-                    sample: str = f.read(BYTES_TO_READ)
-                    f.seek(0)  # send the file cursor to the beginning of the file
-
-                    has_header = csv.Sniffer().has_header(sample)
-                    if not has_header:
-                        return False, None
-
-                    reader: Iterator[list[str]] = csv.reader(f)
-                    headers: list[str] = next(reader)
-
-                    if reference_headers is None:
-                        reference_headers = headers
-                    elif headers != reference_headers:
-                        return False, None
+                headers = pd.read_csv(path_str, nrows=0).columns.tolist()
+                if reference_headers is None:
+                    reference_headers = headers
+                elif headers != reference_headers:
+                    return False, None
 
             except Exception as e:
-                print(
-                    f'Error reading "{path.name}": {str(e)}'
-                )  # change this to a error pop up message maybe...?
+                print(f'Error reading headers from "{path_str}": {str(e)}\n')
+                print(traceback.print_exc())
                 return False, None
 
         return True, reference_headers
