@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## [2.1.2] - 2025-04-18
 ### Added
+- pandas method for finding header of csv file
+
+### Changed
+- N/A
+
+### Deprecated
+- N/A
+
+### Removed
+- csv sniffer method
+
+### Fixed
+- N/A
+
+
+## [2.1.2] - 2025-04-18
+### Added
 - N/A
 
 ### Changed
