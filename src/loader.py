@@ -5,8 +5,6 @@ import pandas as pd
 from pandas import DataFrame
 from PySide6.QtWidgets import QFileDialog
 
-BYTES_TO_READ = 1000
-
 
 class DataLoader:
     def __init__(self) -> None:
