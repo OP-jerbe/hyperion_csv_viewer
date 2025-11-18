@@ -1,3 +1,10 @@
+"""
+Loads in data from the csv generated the test stand software.
+Checks that all csv files have the same headers.
+Checks that there is a Time header present.
+Gets the total file size.
+"""
+
 import sys
 from pathlib import Path
 
